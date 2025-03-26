@@ -1,0 +1,91 @@
+/* styles.css */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to bottom right, #cbd5f4, #e9d5ff);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploader-wrapper {
+  background: white;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  padding: 2rem;
+  text-align: center;
+  max-width: 1000px;
+  width: 100%;
+}
+
+.uploader-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.upload-button {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.upload-button:hover {
+  background-color: #1e40af;
+}
+
+.preview-image {
+  margin-top: 1rem;
+  max-width: 100%;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ddd;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.drop-zone p {
+  margin-bottom: 1rem;
+  color: #555;
+}
+
+.drop-zone.active {
+  background-color: #e0e7ff;
+  border-color: #3b82f6;
+}
+
+.upload-icon {
+  margin-bottom: 1rem;
+}
+
+/* Анимация загрузки */
+.loader {
+  margin: 1rem auto;
+  width: 48px;
+  height: 48px;
+  border: 5px solid #cbd5e1;
+  border-top: 5px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
