@@ -1,8 +1,9 @@
+torch==2.6.0+cu124
+--extra-index-url https://download.pytorch.org/whl/cu124
 fastapi==0.115.12
 uvicorn==0.34.1
 python-dotenv==1.1.0
 transformers==4.51.3
-torch==2.6.0+cu124
 pillow==11.0.0
 accelerate==1.6.0
 python-multipart==0.0.20
