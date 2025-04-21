@@ -6,29 +6,33 @@ const ImageUploader: React.FC = () => {
     const [image, setImage] = useState<string | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState<string | null>(null);
 
     const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) readFile(file);
+        const uploadedFile = e.target.files?.[0];
+        if (uploadedFile) readFile(uploadedFile);
     };
 
     const handleDrop = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        const file = e.dataTransfer.files?.[0];
-        if (file) readFile(file);
+        const droppedFile = e.dataTransfer.files?.[0];
+        if (droppedFile) readFile(droppedFile);
     };
 
-    const readFile = (file: File) => {
+    const readFile = (selectedFile: File) => {
         setLoading(true);
+
         const reader = new FileReader();
         reader.onloadend = () => {
             setImage(reader.result as string);
-            setLoading(false);
+            sendToServer(selectedFile); // сразу отправляем на сервер
         };
-        reader.readAsDataURL(file);
+
+        reader.readAsDataURL(selectedFile);
     };
+
 
     const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
         e.preventDefault();
@@ -38,6 +42,32 @@ const ImageUploader: React.FC = () => {
     const handleDragLeave = () => {
         setDragActive(false);
     };
+
+    const sendToServer = async (fileToSend: File) => {
+        const formData = new FormData();
+        formData.append("file", fileToSend, fileToSend.name);
+
+        setResult(null);
+
+        try {
+            const response = await fetch("/api/analyze_image", {
+                method: "POST",
+                body: formData
+            })
+            console.log(response)
+
+            if (!response.ok) throw new Error(`Ошибка: ${response.status}`);
+
+            const data = await response.json();
+            setResult(data.description || "Ответ получен, но без описания.");
+        } catch (err) {
+            console.error("Ошибка при отправке:", err);
+            setResult("Ошибка при отправке на сервер.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <div className="uploader-wrapper">
@@ -66,6 +96,13 @@ const ImageUploader: React.FC = () => {
             {!loading && image && (
                 <div>
                     <img src={image} alt="Uploaded" className="preview-image" />
+                </div>
+            )}
+
+            {result && (
+                <div className="result-box">
+                    <strong>Ответ нейросети:</strong>
+                    <p>{result}</p>
                 </div>
             )}
         </div>

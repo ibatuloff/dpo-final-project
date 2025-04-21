@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend  # путь к папке с твоим Dockerfile бэка
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./backend:/app
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend  # путь к React-приложению
+    ports:
+      - "3000:80"
+    stdin_open: true
+    tty: true
+    networks:
+      - app-network
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # для live-reload в Docker на некоторых ОС
+
+networks:
+  app-network:
+    driver: bridge
