@@ -1,5 +1,5 @@
 import React from 'react';
-import ImageUploader from './Uploader';
+import ImageUploader from './components/ImageUploader/Uploader';
 import './App.css'
 
 const App: React.FC = () => {

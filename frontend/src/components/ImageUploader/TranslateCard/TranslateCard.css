@@ -1,0 +1,57 @@
+/* Внешняя рамка (необязательно) */
+.tc-wrapper {
+    border: 1px solid #000;
+    border-radius: 30px;
+    padding: 4px;
+    max-width: 500px;
+    background: #fff5f5;
+}
+
+/* Шапка: 70% — текст, 30% — кнопка */
+.tc-header {
+    display: flex;
+    overflow: hidden;
+    border-radius: 30px;
+    background: #f5d1d1;
+}
+
+/* область с текстом */
+.tc-text {
+    flex: 7;
+    /* ~70% */
+    padding: 12px 16px;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+/* кнопка */
+.tc-btn {
+    flex: 3;
+    /* ~30% */
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 12px 16px;
+    font-size: 14px;
+    text-align: center;
+    color: #6f4e4e;
+}
+
+/* «шторка» с переводом: изначально скрыта */
+.tc-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    background: #cd8888;
+    border-radius: 0 0 30px 30px;
+    padding: 0 16px;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+/* когда открыто — даём место под текст */
+.tc-body.open {
+    max-height: 200px;
+    /* достаточно для нескольких строк */
+    padding: 12px 16px;
+}
