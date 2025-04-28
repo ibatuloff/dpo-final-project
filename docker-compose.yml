@@ -1,4 +1,6 @@
-version: "3.9"
+volumes:
+  hf_models:
+    external: true
 
 services:
   backend:
@@ -8,10 +10,12 @@ services:
       - "8000:8000"
     environment:
       - PYTHONUNBUFFERED=1
+      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
-      - ./backend:/app
+      - hf_models:/hf_models
     networks:
       - app-network
+    runtime: nvidia
 
   frontend:
     build:
@@ -28,3 +32,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+
+

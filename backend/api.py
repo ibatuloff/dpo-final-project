@@ -6,13 +6,23 @@ import io
 import random
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from transformers import MarianMTModel, MarianTokenizer
+from fastapi.middleware.cors import CORSMiddleware
 
 import os
 from dotenv import load_dotenv
 from huggingface_hub import login
 
+print("Checking is cuda available")
+is_cuda = torch.cuda.is_available()
+print(is_cuda)
+if not is_cuda:
+    quit("Cuda is not available")
+else:
+    print("CUDA available")
+
 load_dotenv()
 token = os.getenv("HUGGINGFACE_TOKEN")  # для доступа к моделям Gemma необходима авторизация
+models_cache_dir = os.environ['MODELS_CACHE_DIR']
 login(token=token)
 
 english_rule_topics = [
@@ -62,8 +72,8 @@ english_rule_topics = [
 ]
 
 print("Starting loading BLIP model")
-blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
-blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
+blip_processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir=models_cache_dir)
+blip_model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base", cache_dir=models_cache_dir)
 print("BLIP model downloaded")
 
 
@@ -80,10 +90,10 @@ def get_image_keywords(image: Image) -> dict:
 
 print("Starting loading LLM model")
 
-llm_tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it")
+llm_tokenizer = AutoTokenizer.from_pretrained("google/gemma-2b-it", cache_dir=models_cache_dir)
 llm = AutoModelForCausalLM.from_pretrained(
     "google/gemma-2b-it",
-    device_map="auto",
+    device_map="auto", cache_dir=models_cache_dir
 )
 
 print("LLM downloaded")
@@ -91,8 +101,8 @@ print("LLM downloaded")
 print("Starting loading translate model")
 
 translate_model_name = "Helsinki-NLP/opus-mt-en-ru"
-translate_tokenizer = MarianTokenizer.from_pretrained(translate_model_name)
-translate_model = MarianMTModel.from_pretrained(translate_model_name)
+translate_tokenizer = MarianTokenizer.from_pretrained(translate_model_name, cache_dir=models_cache_dir)
+translate_model = MarianMTModel.from_pretrained(translate_model_name, cache_dir=models_cache_dir)
 
 print("translate model downloaded")
 
@@ -150,6 +160,13 @@ def analyze_image(image: Image = None) -> dict:
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 async def root():
